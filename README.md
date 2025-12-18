@@ -1,4 +1,4 @@
-# ytac - YouTube Audio Player
+# ytac - YouTube Audio in Console
 
 A terminal-based YouTube audio player with keyboard controls for searching and playing YouTube audio.
 

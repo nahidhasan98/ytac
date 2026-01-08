@@ -1,3 +1,3 @@
-module ytac
+module github.com/nahidhasan98/ytac
 
-go 1.25.2
+go 1.25.5

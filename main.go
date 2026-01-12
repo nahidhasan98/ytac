@@ -250,7 +250,7 @@ func printHelp() {
 	fmt.Println("  →/←           Seek forward/backward 5s")
 	fmt.Println("  ↑/↓           Volume up/down (5%)")
 	fmt.Println("  > / <         Next/Previous track in search")
-	fmt.Println("  q			 Stop and return to menu")
+	fmt.Println("  q             Stop and return to menu")
 	fmt.Println("  m             Mute/Unmute")
 	fmt.Println("  9/0           Volume down/up (2%)")
 	fmt.Println("  [/]           Speed down/up")

@@ -2,7 +2,7 @@
 
 set -e
 
-echo "🔨 Building ytac..."
+echo "🔨 Building ytac (Youtube Audio in Console)..."
 
 # Create bin directory
 mkdir -p bin

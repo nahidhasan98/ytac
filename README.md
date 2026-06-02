@@ -8,6 +8,7 @@ A terminal-based YouTube audio player with keyboard controls for searching and p
 - 🎵 Play audio from YouTube URLs or search results
 - ⌨️ Full keyboard controls for navigation and playback
 - 📦 Auto-install missing dependencies (mpv, yt-dlp, fzf)
+- ⬆️ Auto-check yt-dlp against the latest GitHub release and update when needed
 - 🎨 Beautiful interactive search interface with fzf
 - ⚡ Live search results display as they arrive
 - 🎛️ Complete MPV player controls (volume, seek, speed, loop)
@@ -24,6 +25,7 @@ A terminal-based YouTube audio player with keyboard controls for searching and p
 - `fzf` - Fuzzy finder
 
 The tool will offer to install missing dependencies automatically on first run.
+For `yt-dlp`, it checks the latest stable release from `https://github.com/yt-dlp/yt-dlp` and installs or updates the appropriate binary according to the OS when possible.
 
 ## Installation
 
@@ -50,6 +52,18 @@ bin/ytac tafseer
 ### Play from URL
 ```bash
 bin/ytac https://www.youtube.com/watch?v=VIDEO_ID
+```
+
+### Verbose playback logs
+```bash
+bin/ytac --verbose nasheed
+bin/ytac -v https://www.youtube.com/watch?v=VIDEO_ID
+```
+
+### Control search result count
+```bash
+bin/ytac --search-count 3 nasheed
+bin/ytac -c 10 tafseer
 ```
 
 ### Show help
@@ -102,10 +116,16 @@ bin/ytac --help
 CGO_ENABLED=0 go build -ldflags "-s -w" -o bin/ytac
 ```
 
+## OS Notes
+
+- `yt-dlp` installation is OS-aware and selects a release asset based on the platform
+- The overall app is best supported on Linux and macOS right now because dependency installation still assumes `apt`, `dnf`, `pacman`, or `brew`, and playback uses `/dev/stdin` for mpv bindings
+
 ## Tips
 
 - All search results become a playlist - navigate with `>` and `<`
 - Press `q` to return to menu anytime during playback
 - Use `l` to loop your favorite track continuously
 - Use `a` key to loop specific sections (A-B loop)
-- Adjust search result count in code for more/fewer options
+- Use `--search-count` or `-c` to choose how many results to fetch, from 1 to 10
+- Add `--verbose` when you want full mpv logs for troubleshooting playback issues

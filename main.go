@@ -18,8 +18,9 @@ import (
 )
 
 const (
-	ytDLPRepoAPIURL    = "https://api.github.com/repos/yt-dlp/yt-dlp/releases/latest"
-	ytDLPRequestTimout = 20 * time.Second
+	ytDLPRepoAPIURL            = "https://api.github.com/repos/yt-dlp/yt-dlp/releases/latest"
+	ytDLPReleaseAPITimeout     = 20 * time.Second
+	ytDLPBinaryDownloadTimeout = 5 * time.Minute
 )
 
 type gitHubRelease struct {
@@ -71,7 +72,7 @@ func promptYesNo(message string) bool {
 }
 
 func fetchLatestYTDLPRelease() (gitHubRelease, error) {
-	client := &http.Client{Timeout: ytDLPRequestTimout}
+	client := &http.Client{Timeout: ytDLPReleaseAPITimeout}
 	req, err := http.NewRequest(http.MethodGet, ytDLPRepoAPIURL, nil)
 	if err != nil {
 		return gitHubRelease{}, err
@@ -254,7 +255,7 @@ func canWriteDir(path string) bool {
 }
 
 func downloadFile(url, destination string) error {
-	client := &http.Client{Timeout: ytDLPRequestTimout}
+	client := &http.Client{Timeout: ytDLPBinaryDownloadTimeout}
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return err

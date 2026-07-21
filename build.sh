@@ -8,7 +8,7 @@ echo "🔨 Building ytac (Youtube Audio in Console)..."
 mkdir -p bin
 
 # Build the binary
-CGO_ENABLED=0 go build -ldflags "-s -w" -o bin/ytac
+CGO_ENABLED=0 go build -ldflags "-s -w" -o bin/ytac ./cmd/ytac
 
 echo "✅ Build complete!"
 echo "📦 Binary: bin/ytac"

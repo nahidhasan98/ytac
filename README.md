@@ -113,7 +113,14 @@ bin/ytac --help
 ./build.sh
 
 # Manual build
-CGO_ENABLED=0 go build -ldflags "-s -w" -o bin/ytac
+CGO_ENABLED=0 go build -ldflags "-s -w" -o bin/ytac ./cmd/ytac
+```
+
+## Development
+
+```bash
+go test ./...
+go vet ./...
 ```
 
 ## OS Notes
@@ -129,3 +136,7 @@ CGO_ENABLED=0 go build -ldflags "-s -w" -o bin/ytac
 - Use `a` key to loop specific sections (A-B loop)
 - Use `--search-count` or `-c` to choose how many results to fetch, from 1 to 10
 - Add `--verbose` when you want full mpv logs for troubleshooting playback issues
+
+## License
+
+MIT

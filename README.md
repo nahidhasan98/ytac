@@ -31,7 +31,7 @@ For `yt-dlp`, it checks the latest stable release from `https://github.com/yt-dl
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/ytac.git
+git clone https://github.com/nahidhasan98/ytac.git
 cd ytac
 
 # Build

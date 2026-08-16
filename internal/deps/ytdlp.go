@@ -31,6 +31,8 @@ type gitHubReleaseAsset struct {
 	URL  string `json:"browser_download_url"`
 }
 
+var promptedYTDLPNightlyUpdate bool
+
 func fetchLatestYTDLPRelease() (gitHubRelease, error) {
 	client := &http.Client{Timeout: ytDLPReleaseAPITimeout}
 	req, err := http.NewRequest(http.MethodGet, ytDLPRepoAPIURL, nil)
@@ -366,6 +368,12 @@ func ensureYTDLP() {
 }
 
 func PromptUpdateYTDLPToNightly() bool {
+	if promptedYTDLPNightlyUpdate {
+		fmt.Println("💡 Already tried the yt-dlp nightly recovery during this run.")
+		return false
+	}
+	promptedYTDLPNightlyUpdate = true
+
 	installedPath, err := exec.LookPath("yt-dlp")
 	if err != nil {
 		fmt.Printf("⚠️  Could not find yt-dlp for a nightly update: %v\n", err)
@@ -377,13 +385,29 @@ func PromptUpdateYTDLPToNightly() bool {
 		return false
 	}
 
-	cmd := exec.Command(installedPath, "--update-to", "nightly")
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	if err := cmd.Run(); err != nil {
+	if err := updateYTDLPToNightly(installedPath); err != nil {
 		fmt.Printf("❌ Failed to update yt-dlp to nightly: %v\n", err)
 		return false
 	}
 
 	return true
+}
+
+func updateYTDLPToNightly(installedPath string) error {
+	cmd := exec.Command(installedPath, "--update-to", "nightly")
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err == nil {
+		return nil
+	} else if runtime.GOOS == "windows" || os.Geteuid() == 0 || !checkDependency("sudo") {
+		return err
+	}
+
+	fmt.Println("🔐 yt-dlp is installed in a protected location. Retrying the update with sudo...")
+	sudoCmd := exec.Command("sudo", installedPath, "--update-to", "nightly")
+	sudoCmd.Stdin = os.Stdin
+	sudoCmd.Stdout = os.Stdout
+	sudoCmd.Stderr = os.Stderr
+	return sudoCmd.Run()
 }

@@ -76,3 +76,25 @@ func TestParseArgs(t *testing.T) {
 		})
 	}
 }
+
+func TestContainsYouTubeURL(t *testing.T) {
+	tests := []struct {
+		name string
+		urls []string
+		want bool
+	}{
+		{name: "watch URL", urls: []string{"https://www.youtube.com/watch?v=abc"}, want: true},
+		{name: "short URL", urls: []string{"https://youtu.be/abc"}, want: true},
+		{name: "music subdomain", urls: []string{"https://music.youtube.com/watch?v=abc"}, want: true},
+		{name: "non YouTube URL", urls: []string{"https://example.com/watch?v=abc"}, want: false},
+		{name: "invalid URL", urls: []string{"://not-url"}, want: false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := containsYouTubeURL(tt.urls); got != tt.want {
+				t.Fatalf("containsYouTubeURL() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

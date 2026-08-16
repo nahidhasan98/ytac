@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"net/url"
 	"strings"
 	"time"
 
@@ -32,7 +33,11 @@ func Run(args []string) int {
 	}
 
 	if strings.HasPrefix(query, "http") {
-		player.PlayDirectURL(query, showVerbose)
+		if err := player.PlayDirectURL(query, showVerbose); err != nil {
+			handlePlaybackError(err, []string{query}, showVerbose, func() error {
+				return player.PlayDirectURL(query, showVerbose)
+			})
+		}
 		return 0
 	}
 
@@ -57,11 +62,56 @@ func Run(args []string) int {
 			break
 		}
 
-		player.PlaySearchResults(results, selectedIndex, showVerbose)
+		if err := player.PlaySearchResults(results, selectedIndex, showVerbose); err != nil {
+			urls := playableURLs(results)
+			handlePlaybackError(err, urls, showVerbose, func() error {
+				return player.PlaySearchResults(results, selectedIndex, showVerbose)
+			})
+		}
 		fmt.Println("\n🔄 Returning to menu...")
 		time.Sleep(500 * time.Millisecond)
 	}
 
 	fmt.Println("👋 Goodbye!")
 	return 0
+}
+
+func handlePlaybackError(err error, urls []string, showVerbose bool, retry func() error) {
+	fmt.Printf("❌ Playback ended with an error: %v\n", err)
+	if !showVerbose {
+		fmt.Println("💡 Re-run with --verbose to show full mpv output for debugging.")
+	}
+
+	if !containsYouTubeURL(urls) || !deps.PromptUpdateYTDLPToNightly() {
+		return
+	}
+
+	fmt.Println("🔁 Retrying playback with the updated yt-dlp...")
+	if retryErr := retry(); retryErr != nil {
+		fmt.Printf("❌ Playback still failed after updating yt-dlp: %v\n", retryErr)
+	}
+}
+
+func playableURLs(results []youtube.Result) []string {
+	urls := make([]string, 0, len(results))
+	for _, result := range results {
+		urls = append(urls, result.URL)
+	}
+	return urls
+}
+
+func containsYouTubeURL(urls []string) bool {
+	for _, rawURL := range urls {
+		parsedURL, err := url.Parse(rawURL)
+		if err != nil {
+			continue
+		}
+
+		host := strings.ToLower(parsedURL.Hostname())
+		if host == "youtube.com" || host == "youtu.be" || strings.HasSuffix(host, ".youtube.com") {
+			return true
+		}
+	}
+
+	return false
 }

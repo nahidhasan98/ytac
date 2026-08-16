@@ -44,6 +44,7 @@ func buildMPVArgs(selectedIndex int, urls []string, showVerbose bool) []string {
 	mpvArgs := []string{
 		"--no-video",
 		"--ytdl-format=bestaudio",
+		"--script-opts=ytdl_hook-ytdl_path=yt-dlp",
 		"--term-osd-bar",
 		"--term-playing-msg=▶️  Playing: 🎵 ${media-title}\n",
 	}
@@ -63,41 +64,41 @@ func buildMPVArgs(selectedIndex int, urls []string, showVerbose bool) []string {
 	return mpvArgs
 }
 
-func playMPV(mpvArgs []string) {
+func playMPV(mpvArgs []string) error {
 	play := exec.Command("mpv", mpvArgs...)
 	play.Stdout = os.Stdout
 	play.Stderr = os.Stdout
 	play.Stdin = strings.NewReader(getKeyBindings())
 	err := play.Run()
 	if err == nil {
-		return
+		return nil
 	}
 
 	var exitErr *exec.ExitError
 	if errors.As(err, &exitErr) && exitErr.ExitCode() == 0 {
-		return
+		return nil
 	}
 
-	fmt.Printf("❌ Playback ended with an error: %v\n", err)
-	fmt.Println("💡 Re-run with --verbose to show full mpv output for debugging.")
+	return err
 }
 
-func PlaySearchResults(results []youtube.Result, selectedIndex int, showVerbose bool) {
+func PlaySearchResults(results []youtube.Result, selectedIndex int, showVerbose bool) error {
 	urls := extractURLsFromResults(results)
 	fmt.Println("⌨️  Controls: Space=Pause | ←→=Seek | ↑↓=Volume | q=Stop&Menu | >/<=Next/Prev")
 	fmt.Println()
 
 	mpvArgs := buildMPVArgs(selectedIndex-1, urls, showVerbose)
-	playMPV(mpvArgs)
+	return playMPV(mpvArgs)
 }
 
-func PlayDirectURL(url string, showVerbose bool) {
+func PlayDirectURL(url string, showVerbose bool) error {
 	fmt.Println("▶️  Playing from URL...")
 	fmt.Println("⌨️  Controls: Space=Pause | ←→=Seek | ↑↓=Volume | q=Quit")
 
 	mpvArgs := []string{
 		"--no-video",
 		"--ytdl-format=bestaudio",
+		"--script-opts=ytdl_hook-ytdl_path=yt-dlp",
 		"--term-osd-bar",
 		"--term-playing-msg=▶️  Playing: 🎵 ${media-title}\n",
 		"--input-default-bindings=no",
@@ -109,5 +110,5 @@ func PlayDirectURL(url string, showVerbose bool) {
 	}
 	mpvArgs = append(mpvArgs, url)
 
-	playMPV(mpvArgs)
+	return playMPV(mpvArgs)
 }

@@ -364,3 +364,26 @@ func ensureYTDLP() {
 		log.Fatalf("❌ Failed to install yt-dlp: %v\n", err)
 	}
 }
+
+func PromptUpdateYTDLPToNightly() bool {
+	installedPath, err := exec.LookPath("yt-dlp")
+	if err != nil {
+		fmt.Printf("⚠️  Could not find yt-dlp for a nightly update: %v\n", err)
+		return false
+	}
+
+	fmt.Println("💡 YouTube playback failed. A newer yt-dlp nightly often fixes sudden YouTube 403 errors before the next stable release.")
+	if !promptYesNo("📥 Would you like to update yt-dlp to nightly and retry playback now? (y/N): ") {
+		return false
+	}
+
+	cmd := exec.Command(installedPath, "--update-to", "nightly")
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
+		fmt.Printf("❌ Failed to update yt-dlp to nightly: %v\n", err)
+		return false
+	}
+
+	return true
+}

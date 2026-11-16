@@ -137,6 +137,7 @@ go vet ./...
 - Use `a` key to loop specific sections (A-B loop)
 - Use `--search-count` or `-c` to choose how many results to fetch, from 1 to 10
 - Add `--verbose` when you want full mpv logs for troubleshooting playback issues
+- Run `ytac --version` (or `-V`) to see the installed version and what changed in it (from [CHANGELOG.md](CHANGELOG.md)); every run also prints the version on the first line
 
 ## License
 

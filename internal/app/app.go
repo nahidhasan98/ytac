@@ -13,6 +13,13 @@ import (
 )
 
 func Run(args []string) int {
+	printVersion()
+
+	if len(args) > 0 && (args[0] == "-V" || args[0] == "--version") {
+		printChangelog()
+		return 0
+	}
+
 	if len(args) < 1 {
 		printHelp()
 		return 1

@@ -9,7 +9,7 @@ import (
 const defaultSearchCount = 3
 
 func printHelp() {
-	fmt.Println("🎵 YouTube Audio Player (ytac)")
+	fmt.Println("YouTube Audio Player in Console")
 	fmt.Println()
 	fmt.Println("Usage:")
 	fmt.Println("  ytac [--verbose] [--search-count <1-10>] <url>          Play audio from YouTube URL")
@@ -18,6 +18,8 @@ func printHelp() {
 	fmt.Println("Options:")
 	fmt.Println("  -v, --verbose               Show full mpv logs during playback")
 	fmt.Println("  -c, --search-count <1-10>   Number of search results to fetch (default: 3)")
+	fmt.Println("  -V, --version               Show version and what changed in it")
+	fmt.Println("  -h, --help                  Show this help")
 	fmt.Println()
 	fmt.Println("Keyboard Controls in Search (FZF):")
 	fmt.Println("  ↑/↓ or j/k    Navigate up/down")
@@ -38,6 +40,7 @@ func printHelp() {
 	fmt.Println("  r             Restart from beginning")
 	fmt.Println("  l             Loop entire track (toggle)")
 	fmt.Println("  a             A-B loop (set start, end, clear)")
+	fmt.Println("  c             Captions on/off")
 }
 
 func parseArgs(args []string) (string, bool, int, error) {

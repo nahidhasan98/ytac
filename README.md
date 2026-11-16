@@ -95,6 +95,7 @@ bin/ytac --help
 | `l` | Loop entire track (toggle on/off) |
 | `a` | A-B loop (set start, end, clear) |
 | `m` | Mute/Unmute |
+| `c` | Captions on/off (shown under the playing line when the video has English captions) |
 | `q` | Stop and return to menu |
 
 ## How It Works

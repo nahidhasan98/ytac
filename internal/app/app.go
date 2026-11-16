@@ -33,6 +33,7 @@ func Run(args []string) int {
 	}
 
 	if strings.HasPrefix(query, "http") {
+		query = cleanURL(query)
 		if err := player.PlayDirectURL(query, showVerbose); err != nil {
 			handlePlaybackError(err, []string{query}, showVerbose, func() error {
 				return player.PlayDirectURL(query, showVerbose)
@@ -114,4 +115,11 @@ func containsYouTubeURL(urls []string) bool {
 	}
 
 	return false
+}
+
+// cleanURL removes shell-escape backslashes that end up inside a quoted URL,
+// e.g. zsh's url-quote-magic turns `watch?v=` into `watch\?v\=` on paste.
+// A backslash is never valid in a URL, so dropping them is safe.
+func cleanURL(raw string) string {
+	return strings.ReplaceAll(strings.TrimSpace(raw), `\`, "")
 }

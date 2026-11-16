@@ -13,7 +13,7 @@ func TestBuildMPVArgs(t *testing.T) {
 	wantContains := []string{
 		"--no-video",
 		"--ytdl-format=bestaudio",
-		"--script-opts=ytdl_hook-ytdl_path=yt-dlp",
+		"--sub-visibility=no",
 		"--msg-level=all=no,term-msg=info,statusline=status",
 		"--input-conf=/dev/stdin",
 		"--playlist-start=1",

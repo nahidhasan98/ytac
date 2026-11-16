@@ -98,3 +98,16 @@ func TestContainsYouTubeURL(t *testing.T) {
 		})
 	}
 }
+
+func TestCleanURL(t *testing.T) {
+	tests := map[string]string{
+		`https://www.youtube.com/watch\?v\=VhTycszqQ3c`:  "https://www.youtube.com/watch?v=VhTycszqQ3c",
+		"https://youtu.be/kGobHQ7z8X4":                   "https://youtu.be/kGobHQ7z8X4",
+		` https://www.youtube.com/watch\?v\=abc\&t\=10 `: "https://www.youtube.com/watch?v=abc&t=10",
+	}
+	for in, want := range tests {
+		if got := cleanURL(in); got != want {
+			t.Errorf("cleanURL(%q) = %q, want %q", in, got, want)
+		}
+	}
+}
